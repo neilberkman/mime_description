@@ -1,0 +1,53 @@
+name: Update MIME Data
+
+# Controls when the action will run.
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+  # Runs on a schedule (every Sunday at 02:00 UTC)
+  schedule:
+    - cron: '0 2 * * 0'
+
+jobs:
+  update-mime-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      # 1. Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Elixir
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: '27.2'
+          elixir-version: '1.18.1'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+
+      # 4. Run the generator
+      # This will fetch the latest XML and create/update the data.ex file.
+      - name: Run MIME data generator
+        run: mix mime_description.generate
+
+      # 5. Commit and push the changes if data.ex was modified
+      # This action checks for any changes in the git working tree.
+      # If there are changes, it commits them and pushes to the repository.
+      - name: Commit and push if data changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(data): Update MIME descriptions from freedesktop.org"
+          branch: main # Or your default branch
+          file_pattern: lib/mime_description/data.ex # Only commit changes to the data.ex file
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "github-actions@github.com"
+          commit_author: "GitHub Actions Bot <github-actions@github.com>"
