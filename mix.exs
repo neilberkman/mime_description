@@ -2,7 +2,7 @@ defmodule MimeDescription.MixProject do
   @moduledoc false
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.11.0"
   @url "https://github.com/neilberkman/mime_description"
   @maintainers ["Neil Berkman"]
 
