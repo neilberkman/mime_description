@@ -12,6 +12,10 @@ defmodule MimeDescription do
       MimeDescription.get("application/pdf")
       #=> {:ok, "PDF document"}
 
+      # Handle MIME types with parameters (charset, boundary, etc.)
+      MimeDescription.get_from_header("text/plain; charset=utf-8")
+      #=> {:ok, "Plain text document"}
+
       # Get description with fallback
       MimeDescription.get("unknown/type")
       #=> {:error, :not_found}
@@ -38,7 +42,7 @@ defmodule MimeDescription do
       {:ok, "PDF document"}
 
       iex> MimeDescription.get("text/plain")
-      {:ok, "plain text document"}
+      {:ok, "Plain text document"}
 
       iex> MimeDescription.get("unknown/type")
       {:error, :not_found}
@@ -49,6 +53,87 @@ defmodule MimeDescription do
       nil -> {:error, :not_found}
       description -> {:ok, description}
     end
+  end
+
+  @doc """
+  Get the human-friendly description for a MIME type from a raw header value.
+
+  This function handles MIME types that may include parameters like charset,
+  boundary, etc. It extracts the base MIME type and looks up its description.
+
+  ## Examples
+
+      iex> MimeDescription.get_from_header("text/plain; charset=utf-8")
+      {:ok, "Plain text document"}
+
+      iex> MimeDescription.get_from_header("application/pdf; name=document.pdf")
+      {:ok, "PDF document"}
+
+      iex> MimeDescription.get_from_header("text/html;charset=ISO-8859-1")
+      {:ok, "HTML document"}
+
+      iex> MimeDescription.get_from_header("multipart/form-data; boundary=----WebKitFormBoundary")
+      {:ok, "multipart message"}
+
+      iex> MimeDescription.get_from_header("unknown/type; param=value")
+      {:error, :not_found}
+  """
+  @spec get_from_header(String.t()) :: {:ok, String.t()} | {:error, :not_found}
+  def get_from_header(mime_header) when is_binary(mime_header) do
+    mime_header
+    |> extract_mime_type()
+    |> get()
+  end
+
+  @doc """
+  Get the human-friendly description for a MIME type from a raw header value,
+  returning the cleaned MIME type as a fallback if not found.
+
+  This is useful when you want to display something reasonable even for unknown types.
+
+  ## Examples
+
+      iex> MimeDescription.get_from_header_with_fallback("text/plain; charset=utf-8")
+      "Plain text document"
+
+      iex> MimeDescription.get_from_header_with_fallback("application/x-custom; param=value")
+      "application/x-custom"
+
+      iex> MimeDescription.get_from_header_with_fallback("unknown/type; charset=utf-8", "Unknown file")
+      "Unknown file"
+  """
+  @spec get_from_header_with_fallback(String.t(), String.t() | nil) :: String.t()
+  def get_from_header_with_fallback(mime_header, default \\ nil) when is_binary(mime_header) do
+    cleaned_mime = extract_mime_type(mime_header)
+
+    case get(cleaned_mime) do
+      {:ok, description} -> description
+      {:error, :not_found} -> default || cleaned_mime
+    end
+  end
+
+  @doc """
+  Extract the base MIME type from a header value, removing any parameters.
+
+  ## Examples
+
+      iex> MimeDescription.extract_mime_type("text/plain; charset=utf-8")
+      "text/plain"
+
+      iex> MimeDescription.extract_mime_type("application/pdf;name=document.pdf")
+      "application/pdf"
+
+      iex> MimeDescription.extract_mime_type("  text/html ; charset=ISO-8859-1  ")
+      "text/html"
+  """
+  @spec extract_mime_type(String.t()) :: String.t()
+  def extract_mime_type(mime_header) when is_binary(mime_header) do
+    mime_header
+    |> String.split(";")
+    |> List.first()
+    |> Kernel.||("")
+    |> String.trim()
+    |> String.downcase()
   end
 
   @doc """
