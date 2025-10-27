@@ -45,7 +45,7 @@ defmodule MimeDescription.MixProject do
       {:req, "~> 0.5"},
       {:jason, "~> 1.4.4"},
       {:castore, "~> 1.0.15"},
-      {:finch, "~> 0.20"},
+      {:finch, ">= 0.17.0"},
 
       # dev
       {:ex_doc, "~> 0.38.3", only: :dev},
