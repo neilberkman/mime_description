@@ -133,6 +133,7 @@ defmodule MimeDescription.Generator do
 
   defp compute_data_hash(descriptions) do
     descriptions
+    |> Enum.sort()
     |> :erlang.term_to_binary()
     |> then(&:crypto.hash(:sha256, &1))
     |> Base.encode16()
