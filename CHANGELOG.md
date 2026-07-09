@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-07-08
+
+### Fixed
+
+- Weekly data-update workflow no longer commits timestamp-only changes. Change
+  detection now compares against a data hash embedded in the generated
+  `data.ex` header, so it works statelessly on a fresh CI checkout instead of
+  relying on the local `.mime_cache` directory
+- CI now fails when tests fail (removed a stray `set +e` around `mix test`)
+
+### Security
+
+- Updated `req` (0.6.2), `mint` (1.9.1), and `hpax` (1.0.4) to resolve
+  security advisories, including HIGH-severity DoS CVEs
+  (EEF-CVE-2026-49755, EEF-CVE-2026-56810, EEF-CVE-2026-49754,
+  EEF-CVE-2026-48862, EEF-CVE-2026-58226)
+
+### Changed
+
+- Relaxed over-tight dependency constraints and updated all deps
+  (`finch` 0.23.0, `ex_doc` 0.40.3, `quokka` 2.13.1, `credo` 1.7.19, etc.)
+- Bumped GitHub Actions `checkout` and `cache` to v4
+
 ## [0.11.0] - 2024-09-14
 
 ### Added

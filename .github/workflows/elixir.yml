@@ -23,7 +23,7 @@ jobs:
           - elixir: "1.18.4"
             otp: "28.0"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Elixir
         uses: erlef/setup-beam@v1
@@ -34,7 +34,7 @@ jobs:
       # Standard caching pattern based on Phoenix Framework
       - name: Cache deps
         id: cache-deps
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: deps-v3
         with:
@@ -45,7 +45,7 @@ jobs:
 
       - name: Cache compiled build
         id: cache-build
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: build-v3
         with:
@@ -73,9 +73,7 @@ jobs:
         run: MIX_ENV=test mix compile --warnings-as-errors
 
       - name: Run Tests
-        run: |
-          set +e
-          mix test --trace
+        run: mix test --trace
 
       - name: Check formatting
         if: matrix.elixir == '1.18.4' && matrix.otp == '28.0'

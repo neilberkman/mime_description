@@ -10,7 +10,6 @@
     # Explicitly enable all modules to ensure everything is fixed
     only: [
       :blocks,
-      :comment_directives,
       :configs,
       :defs,
       :deprecations,

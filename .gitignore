@@ -21,3 +21,4 @@ mime_description-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+.mime_cache/

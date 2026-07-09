@@ -2,7 +2,7 @@ defmodule MimeDescription.MixProject do
   @moduledoc false
   use Mix.Project
 
-  @version "0.11.1"
+  @version "0.12.0"
   @url "https://github.com/neilberkman/mime_description"
   @maintainers ["Neil Berkman"]
 
@@ -42,17 +42,17 @@ defmodule MimeDescription.MixProject do
   defp deps do
     [
       {:sweet_xml, "~> 0.7"},
-      {:req, "~> 0.5"},
-      {:jason, "~> 1.4.4"},
-      {:castore, "~> 1.0.15"},
+      {:req, "~> 0.6"},
+      {:jason, "~> 1.4"},
+      {:castore, "~> 1.0"},
       {:finch, ">= 0.17.0"},
 
       # dev
-      {:ex_doc, "~> 0.38.3", only: :dev},
+      {:ex_doc, "~> 0.40", only: :dev},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.4.6", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:quokka, "~> 2.11.2", only: [:dev, :test], runtime: false}
+      {:quokka, "~> 2.13", only: [:dev, :test], runtime: false}
     ]
   end
 
